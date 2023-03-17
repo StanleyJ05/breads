@@ -17,16 +17,37 @@ module.exports = breads
 breads.get('/new', (req, res) => {
   res.render('new')
 })
+// EDIT
+breads.get('/:arrayIndex/edit', (req, res) => {
+  res.render('edit', {
+    bread: Bread[req.params.arrayIndex],
+    index: req.params.arrayIndex
+  })
+})
+
 
 // SHOW
 breads.get('/:arrayIndex', (req, res) => {
   if (Bread[req.params.arrayIndex]) {
     res.render('Show', {
-      bread:Bread[req.params.arrayIndex]
+      bread:Bread[req.params.arrayIndex],
+      index: req.params.arrayIndex,
     })
   } else {
-    res.send('404')
+    res.render('404')
   }
+})
+// UPDATE
+breads.put('/:arrayIndex', (req, res) => {
+  req.body.hasGluten = req.body.hasGluten === 'on'
+  Bread[req.params.arrayIndex] = req.body
+  res.redirect(`/breads/${req.params.arrayIndex}`)
+})
+
+// DELETE
+breads.delete('/:arrayIndex', (req, res) => {
+  Bread.splice(req.params.arrayIndex, 1)
+  res.status(303).redirect('/breads')
 })
 // CREATE
 breads.post('/', (req, res) => {
@@ -41,6 +62,8 @@ breads.post('/', (req, res) => {
   Bread.push(req.body)
   res.redirect('/breads')
 })
+
+
 
 
 
